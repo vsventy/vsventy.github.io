@@ -281,7 +281,6 @@ avb.chart = function () {
                     return '';
                 } else {
                     //return integer
-                    console.log(d);
                     return avb.data[avb.section + '_dates'].months[d-1].value;
                 }
             });
