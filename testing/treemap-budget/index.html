@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>Town Budget</title>
+  <!-- Import main styles -->
+  <link href='http://fonts.googleapis.com/css?family=Strait' rel='stylesheet' type='text/css'>
+  <!-- <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet"> -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+  <!--[if lt IE 10]>
+<link rel="stylesheet" href="assets/css/ie.css">
+<![endif]-->
+</head>
+
+<body class='show-me'>
+
+  <div class="container wrapper">
+
+  </div>
+
+  <div class="purple-border" id="avb-menubar">
+
+    <div class="container">
+
+      <div class="homebutton" onclick='window.location = "/"'>
+        <div style="font-size:32px;line-height:28px; display:inline-block"> City Name </div>
+        <img src="assets/img/logo@High.png" alt="avb-logo" width=24 height=24 />
+      </div>
+
+      <div id="navbar-links" style="line-height:30px;">
+
+        <div onclick='window.location = "/"' class="entry homebutton"> Budget, Visualized </div>
+
+        <div class="entry navbar-margin">
+          <span data-section="revenues" class="menubutton section margin selected"><a href="#!">Revenues</a></span>
+          <span data-section="expenses" class="menubutton section margin"><a href="#!">Expenses</a></span>
+        </div>
+
+        <div class="entry" id="navbar-right" style="float:right;">
+
+          <div class="menubutton margin">
+            <span> <i class="icon-th-large"></i> </span>
+            <a id="navbar-map" href="javascript:avb.home.hide();switchMode('t'); "> Chart view </a>
+          </div>
+
+          <ul id="yeardrop" class="nav menubutton">
+            <li id="yeardrop-container" class="dropdown" style="display:none;">
+              <a id="yeardrop-label" class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">Dropdown <b class="caret"></b></a>
+              <ul id="yeardrop-list" class="dropdown-menu vhscrollable" role="menu">
+              </ul>
+            </li>
+            <li>
+              <select id="yeardrop-container-mobile" style="display:none; width:100px; height:28px">
+              </select>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container" id="avb-body">
+    <div class="row-fluid" id="avb-wrap" style="width:auto;">
+
+    </div>
+  </div>
+
+  <script type="text/html" id="treemap-template">
+
+    <div id="information-container" class="span6" style="position:relative; padding-left:5px;">
+
+      <div id="information-cards">
+
+        <!-- entry title -->
+        <div class="title-head" style="height:70px;">
+          <div style="display:inline-block;" class="text"> </div>
+        </div>
+
+        <div id="info-wrap">
+          <div id="slider-wrap">
+
+            <!-- layer chart legend -->
+            <div id="legend-wrap">
+              <div class="arrow" style="right:20px;">
+                <i class="icon-chevron-left"></i>
+              </div>
+              <div id="legend-container">
+                <div id="legend" class="separator">
+                  <table>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- info cards -->
+            <div id="cards">
+              <div class="arrow">
+                <i class="icon-chevron-right"></i>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- chart -->
+      <div id="chart-wrap" class="row-fluid">
+        <div id='chart' class="chart"> </div>
+      </div>
+    </div>
+
+    <!-- treemap -->
+    <div id="navigation-container" class="span6">
+      <div class="title-head" style="height:70px;">
+        <button id="zoombutton" class="btn pull-right">
+          <i class="icon-zoom-out"></i> Go back
+        </button>
+      </div>
+      <div id="navigation">
+        <div id="ie-popover">
+          <div class="text"></div>
+          <div class="arrow"> </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!-- card template -->
+  <script type="text/html" id="card-template">
+    <div class="card  {{ class }}">
+      <div class="card-img"> </div>
+      <div class="card-text">
+        <div class="card-value"></div>
+        <div class="card-desc"></div>
+      </div>
+    </div>
+  </script>
+
+  <!-- table template -->
+  <script type="text/html" id="table-template">
+    <div id="table-container">
+      <div class="tablerow" id="table-header">
+        <div class="bullet"> </div>
+      </div>
+  </script>
+
+  <!-- table header template -->
+  <script type="text/html" id="table-header-template">
+    <div class="tablerow" id="table-header" data-level=0>
+      <div class="bullet"> </div>
+
+      <div class=" head"> </div>
+
+    </div>
+  </script>
+
+  <!-- table row template -->
+  <script type="text/html" id="row-template">
+    <div class="tablerow">
+      <div class="bullet"> <img class="expand-icon" src="img/listBullet.png" /> </div>
+    </div>
+  </script>
+
+  <!-- year dropdown template -->
+  <script type="text/html" id="dropdown-template">
+    <li role="presentation">
+      <a role="menuitem" tabindex="-1" href="#">{{ year }}</a>
+    </li>
+  </script>
+
+  <div class='footer-container full-bleed'>
+    <div class='container'>
+      <div class="footer row">
+        <div style="margin: auto; display: block; text-align: center;">
+          <p>Built with ♥ by <a href="https://www.upwork.com/freelancers/~01b6138fdf87d025f6" target="_blank">Vitalii Sventyi</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Sripts -->
+
+  <!-- Non-minified js -->
+  <script type="text/javascript" src="assets/js/lib/mustache/mustache.js"></script>
+  <script type="text/javascript" src="assets/js/lib/d3/d3.v3.min.js"></script>
+  <script type="text/javascript" src="assets/js/lib/jquery/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="assets/js/lib/bootstrap/bootstrap.min.js"></script>
+  <script type="text/javascript" src="assets/js/lib/detectmobilebrowser/detectmobilebrowser.js"></script>
+  <script type="text/javascript" src="assets/js/lib/intro/intro.min.js"></script>
+  <script type="text/javascript" src="assets/js/lib/cookie/jquery.cookie.js"></script>
+  <script type="text/javascript" src="assets/js/treemap.js"></script>
+  <script type="text/javascript" src="assets/js/chart.js"></script>
+  <script type="text/javascript" src="assets/js/cards.js"></script>
+  <script type="text/javascript" src="assets/js/table.js"></script>
+  <script type="text/javascript" src="assets/js/navbar.js"></script>
+  <script type="text/javascript" src="assets/js/statistics.js"></script>
+  <script type="text/javascript" src="assets/js/home.js"></script>
+  <script type="text/javascript" src="assets/js/avb.js"></script>
+
+  <script>
+  $(document).ready(initialize);
+  </script>
+
+  <script type='text/javascript'>
+  activepath = window.location.pathname.substring(0);
+  if (activepath.substring(activepath.length - 1) == "/") {
+    activepath = window.location.pathname.substring(0, window.location.pathname.length - 1);
+  }
+  if ($(".dropdown-toggle[href='" + activepath + "']").length) {
+    $(".dropdown-toggle[href='" + activepath + "']").addClass('nav-active');
+  } else {
+    activepath = "expenses";
+    $(".dropdown-toggle[href='" + activepath + "']").addClass('nav-active');
+  }
+  </script>
+
+  <script src="assets/js/functions.js"></script>
+</body>
+
+</html>
